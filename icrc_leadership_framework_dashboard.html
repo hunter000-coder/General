@@ -7,9 +7,13 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.js"
+            integrity="sha384-zYPBGXwO4633CABX/5Spf6emCKUJCfoOkhOMYyxMsatqQZPnDblmmOewfjsIVWCM"
+            crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
@@ -29,38 +33,21 @@
                 height: 350px;
             }
         }
+        .nav-tab {
+            border-bottom: 3px solid transparent;
+        }
         .nav-tab.active {
-            border-bottom: 3px solid #991b1b;
+            border-bottom-color: #991b1b;
             color: #991b1b;
             font-weight: 600;
         }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        :focus-visible { outline: 2px solid #991b1b; outline-offset: 2px; }
+        header :focus-visible, #value-detail-box :focus-visible { outline-color: #fbbf24; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between">
-
-<!-- Chosen Palette: Slate Warm Gray & Subdued Crimson (Professional Neutral with subtle ICRC red accents) -->
-
-<!-- Application Structure Plan:
-    1. Executive Header & Operational Metrics Banner: Quick key facts showing staff size, HLMS reach, and mandate foundation.
-    2. Interactive Navigation Tabs:
-       - Section 1: Institutional Philosophy & Core Values (4 Values Deep Dive).
-       - Section 2: 3-Tier Leadership Framework (Interactive Tier Explorer & ECTS / Focus Charts).
-       - Section 3: Center of Excellence & Movement Ecosystem (HLMS vs Solferino vs Joint Movement Courses).
-       - Section 4: 70:20:10 Methodology & University of Lucerne Academic Pathway (Doughnut chart & Degree Step Ladder).
-       - Section 5: Pipelines, Operational Impact & Modern Dilemmas (Generalist vs Specialist tracks, active conflict challenges, AI/Cyber risks).
-    3. Dynamic JS State Engine: Tab switching, tier selection modal/card updates, value deep dives, and comparison filters.
-    4. Data Visualizations: Chart.js Doughnut (70:20:10 model) and Chart.js Stacked Bar (ECTS & Timeline per Tier).
-    5. Justification: Non-linear tabbed layout allows users to quickly jump between academic rigor, behavioral competencies, institutional setup, and real-world conflict zone challenges without endless scrolling.
--->
-
-<!-- Visualization & Content Choices:
-    - 70:20:10 Learning Model -> Goal: Proportion -> Method: Chart.js Doughnut Canvas -> Justification: Clearly communicates the weight of applied field experience vs formal learning.
-    - Leadership Continuum -> Goal: Compare/Organize -> Method: Interactive Stepper + Chart.js Stacked Bar -> Justification: Shows progression across tiers, study hours, and ECTS credits.
-    - Movement Ecosystem -> Goal: Dynamic Matrix -> Method: HTML Grid with JS Filter -> Justification: Clarifies distinct mandates between ICRC HLMS, IFRC Solferino, and Joint Movement courses.
-    - Core Values -> Goal: Concept Exploration -> Method: Interactive Grid Cards -> Justification: Encourages active engagement with behavioral definitions.
--->
-
-<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
 <header class="bg-slate-900 text-white shadow-md">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -95,23 +82,23 @@
     </div>
 </header>
 
-<nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
+<nav class="bg-white border-b border-slate-200 sticky top-0 z-50" aria-label="Dashboard sections">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex overflow-x-auto space-x-8 no-scrollbar text-sm font-medium text-slate-600">
-            <button onclick="switchTab('philosophy')" id="tab-philosophy" class="nav-tab py-4 px-1 inline-flex items-center whitespace-nowrap active">
-                <span>🏛️ Mandate & Values</span>
+        <div class="flex overflow-x-auto space-x-8 no-scrollbar text-sm font-medium text-slate-600" role="tablist" aria-label="Framework sections">
+            <button type="button" role="tab" id="tab-philosophy" aria-controls="sec-philosophy" aria-selected="true" tabindex="0" class="nav-tab py-4 px-1 inline-flex items-center whitespace-nowrap active" data-tab="philosophy">
+                <span><span aria-hidden="true">🏛️</span> Mandate & Values</span>
             </button>
-            <button onclick="switchTab('tiers')" id="tab-tiers" class="nav-tab py-4 px-1 inline-flex items-center whitespace-nowrap">
-                <span>🎯 3-Tier Framework</span>
+            <button type="button" role="tab" id="tab-tiers" aria-controls="sec-tiers" aria-selected="false" tabindex="-1" class="nav-tab py-4 px-1 inline-flex items-center whitespace-nowrap" data-tab="tiers">
+                <span><span aria-hidden="true">🎯</span> 3-Tier Framework</span>
             </button>
-            <button onclick="switchTab('hlms')" id="tab-hlms" class="nav-tab py-4 px-1 inline-flex items-center whitespace-nowrap">
-                <span>🏢 Center of Excellence (HLMS)</span>
+            <button type="button" role="tab" id="tab-hlms" aria-controls="sec-hlms" aria-selected="false" tabindex="-1" class="nav-tab py-4 px-1 inline-flex items-center whitespace-nowrap" data-tab="hlms">
+                <span><span aria-hidden="true">🏢</span> Center of Excellence (HLMS)</span>
             </button>
-            <button onclick="switchTab('pedagogy')" id="tab-pedagogy" class="nav-tab py-4 px-1 inline-flex items-center whitespace-nowrap">
-                <span>🎓 Pedagogy & 70:20:10</span>
+            <button type="button" role="tab" id="tab-pedagogy" aria-controls="sec-pedagogy" aria-selected="false" tabindex="-1" class="nav-tab py-4 px-1 inline-flex items-center whitespace-nowrap" data-tab="pedagogy">
+                <span><span aria-hidden="true">🎓</span> Pedagogy & 70:20:10</span>
             </button>
-            <button onclick="switchTab('impact')" id="tab-impact" class="nav-tab py-4 px-1 inline-flex items-center whitespace-nowrap">
-                <span>⚡ Pipelines & Dilemmas</span>
+            <button type="button" role="tab" id="tab-impact" aria-controls="sec-impact" aria-selected="false" tabindex="-1" class="nav-tab py-4 px-1 inline-flex items-center whitespace-nowrap" data-tab="impact">
+                <span><span aria-hidden="true">⚡</span> Pipelines & Dilemmas</span>
             </button>
         </div>
     </div>
@@ -120,22 +107,22 @@
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
 
     <!-- SECTION 1: PHILOSOPHY & VALUES -->
-    <section id="sec-philosophy" class="space-y-8">
+    <section id="sec-philosophy" role="tabpanel" aria-labelledby="tab-philosophy" tabindex="0" class="space-y-8">
         <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
             <h2 class="text-xl font-bold text-slate-900 mb-2">Institutional Philosophy & The 2012 Transformation</h2>
             <p class="text-slate-700 text-sm leading-relaxed mb-4">
                 The International Committee of the Red Cross (ICRC) derives its mandate from the 1949 Geneva Conventions to operate as an independent, neutral, and impartial intermediary in armed conflicts. Historically reliant on informal apprenticeship models among Swiss delegates, the expansion to over 20,000 personnel across 90+ countries led to a comprehensive transformation in 2012. The guiding vision—<strong class="text-slate-900">"one global workforce with different competencies but equal values"</strong>—was established to unite international delegates and locally recruited resident staff under a codified, behavior-based leadership architecture.
             </p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs bg-slate-50 p-4 rounded-lg border border-slate-200">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm bg-slate-50 p-4 rounded-lg border border-slate-200">
                 <div class="flex items-start space-x-3">
-                    <span class="text-xl">📜</span>
+                    <span class="text-xl" aria-hidden="true">📜</span>
                     <div>
                         <strong class="text-slate-900 block text-sm">Legal Mandate Anchor</strong>
                         Neutral, independent, and impartial protection/assistance under International Humanitarian Law (IHL).
                     </div>
                 </div>
                 <div class="flex items-start space-x-3">
-                    <span class="text-xl">🤝</span>
+                    <span class="text-xl" aria-hidden="true">🤝</span>
                     <div>
                         <strong class="text-slate-900 block text-sm">Staff Inclusion Goal</strong>
                         Dismantling historical hierarchies between Geneva headquarters, mobile delegates, and local resident staff.
@@ -147,59 +134,57 @@
         <div>
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-bold text-slate-900">The Four Core Institutional Values</h3>
-                <span class="text-xs text-slate-500">Click a card to explore operational application</span>
+                <span class="text-sm text-slate-500">Click a card to explore operational application</span>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div onclick="selectValue('impact')" id="val-card-impact" class="cursor-pointer bg-white p-5 rounded-xl border-2 border-red-800 shadow-sm hover:border-red-600 transition">
-                    <div class="text-2xl mb-2">🎯</div>
-                    <h4 class="font-bold text-slate-900 text-base">Impact</h4>
-                    <p class="text-slate-600 text-xs mt-1">Prioritizing tangible, life-saving protection and assistance in high-risk zones.</p>
-                </div>
-                <div onclick="selectValue('collaboration')" id="val-card-collaboration" class="cursor-pointer bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:border-red-600 transition">
-                    <div class="text-2xl mb-2">🌐</div>
-                    <h4 class="font-bold text-slate-900 text-base">Collaboration</h4>
-                    <p class="text-slate-600 text-xs mt-1">Bridging operational, technical, and administrative silos across diverse teams.</p>
-                </div>
-                <div onclick="selectValue('respect')" id="val-card-respect" class="cursor-pointer bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:border-red-600 transition">
-                    <div class="text-2xl mb-2">⚖️</div>
-                    <h4 class="font-bold text-slate-900 text-base">Respect</h4>
-                    <p class="text-slate-600 text-xs mt-1">Guaranteeing psychological safety, inclusion, and moral integrity under pressure.</p>
-                </div>
-                <div onclick="selectValue('compassion')" id="val-card-compassion" class="cursor-pointer bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:border-red-600 transition">
-                    <div class="text-2xl mb-2">❤️</div>
-                    <h4 class="font-bold text-slate-900 text-base">Compassion</h4>
-                    <p class="text-slate-600 text-xs mt-1">Balancing humanitarian sensitivity for victims with internal duty of care for staff.</p>
-                </div>
+                <button type="button" data-value="impact" id="val-card-impact" aria-pressed="true" class="cursor-pointer text-left bg-white p-5 rounded-xl border-2 border-red-800 shadow-sm hover:border-red-600 transition">
+                    <span class="block text-2xl mb-2" aria-hidden="true">🎯</span>
+                    <span class="block font-bold text-slate-900 text-base">Impact</span>
+                    <span class="block text-slate-600 text-sm mt-1">Prioritizing tangible, life-saving protection and assistance in high-risk zones.</span>
+                </button>
+                <button type="button" data-value="collaboration" id="val-card-collaboration" aria-pressed="false" class="cursor-pointer text-left bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:border-red-600 transition">
+                    <span class="block text-2xl mb-2" aria-hidden="true">🌐</span>
+                    <span class="block font-bold text-slate-900 text-base">Collaboration</span>
+                    <span class="block text-slate-600 text-sm mt-1">Bridging operational, technical, and administrative silos across diverse teams.</span>
+                </button>
+                <button type="button" data-value="respect" id="val-card-respect" aria-pressed="false" class="cursor-pointer text-left bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:border-red-600 transition">
+                    <span class="block text-2xl mb-2" aria-hidden="true">⚖️</span>
+                    <span class="block font-bold text-slate-900 text-base">Respect</span>
+                    <span class="block text-slate-600 text-sm mt-1">Guaranteeing psychological safety, inclusion, and moral integrity under pressure.</span>
+                </button>
+                <button type="button" data-value="compassion" id="val-card-compassion" aria-pressed="false" class="cursor-pointer text-left bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:border-red-600 transition">
+                    <span class="block text-2xl mb-2" aria-hidden="true">❤️</span>
+                    <span class="block font-bold text-slate-900 text-base">Compassion</span>
+                    <span class="block text-slate-600 text-sm mt-1">Balancing humanitarian sensitivity for victims with internal duty of care for staff.</span>
+                </button>
             </div>
 
-            <div id="value-detail-box" class="mt-4 bg-slate-900 text-slate-100 p-6 rounded-xl border border-slate-800">
+            <div id="value-detail-box" aria-live="polite" class="mt-4 bg-slate-900 text-slate-100 p-6 rounded-xl border border-slate-800">
                 <div class="flex items-center justify-between mb-2">
                     <h4 id="val-detail-title" class="text-lg font-bold text-amber-400">Core Value: Impact</h4>
                     <span class="text-xs bg-slate-800 px-2 py-1 rounded text-slate-400">Operational Focus</span>
                 </div>
-                <p id="val-detail-desc" class="text-sm text-slate-300 leading-relaxed">
-                    Leaders are required to direct multidisciplinary teams toward direct outcomes for civilians, detainees, and wounded combatants. In conflict theaters, impact demands balancing operational risk management with emergency protection interventions.
-                </p>
+                <p id="val-detail-desc" class="text-sm text-slate-300 leading-relaxed"></p>
             </div>
         </div>
     </section>
 
     <!-- SECTION 2: 3-TIER FRAMEWORK -->
-    <section id="sec-tiers" class="space-y-8 hidden">
+    <section id="sec-tiers" role="tabpanel" aria-labelledby="tab-tiers" tabindex="0" class="space-y-8 hidden">
         <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
             <h2 class="text-xl font-bold text-slate-900 mb-2">The Three-Tier Leadership Model</h2>
             <p class="text-slate-700 text-sm leading-relaxed mb-4">
                 The ICRC structures leadership development along a progressive continuum. Rather than treating leadership as a static managerial title, the framework expands a leader’s scope from self-regulation to team dynamics and systemic operational diplomacy.
             </p>
             <div class="flex flex-wrap gap-2 mb-6">
-                <button onclick="selectTier(1)" id="tier-btn-1" class="px-4 py-2 rounded-lg text-sm font-semibold bg-red-800 text-white shadow-sm">Tier 1: Leading by Example</button>
-                <button onclick="selectTier(2)" id="tier-btn-2" class="px-4 py-2 rounded-lg text-sm font-semibold bg-slate-100 text-slate-700 border hover:bg-slate-200">Tier 2: Leading High-Performing Teams</button>
-                <button onclick="selectTier(3)" id="tier-btn-3" class="px-4 py-2 rounded-lg text-sm font-semibold bg-slate-100 text-slate-700 border hover:bg-slate-200">Tier 3: Leading Complex Operations</button>
+                <button type="button" data-tier="1" id="tier-btn-1" aria-pressed="true" class="px-4 py-2 rounded-lg text-sm font-semibold bg-red-800 text-white shadow-sm">Tier 1: Leading by Example</button>
+                <button type="button" data-tier="2" id="tier-btn-2" aria-pressed="false" class="px-4 py-2 rounded-lg text-sm font-semibold bg-slate-100 text-slate-700 border hover:bg-slate-200">Tier 2: Leading High-Performing Teams</button>
+                <button type="button" data-tier="3" id="tier-btn-3" aria-pressed="false" class="px-4 py-2 rounded-lg text-sm font-semibold bg-slate-100 text-slate-700 border hover:bg-slate-200">Tier 3: Leading Complex Operations</button>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="lg:col-span-2 space-y-4">
-                    <div id="tier-content-card" class="bg-slate-50 border border-slate-200 rounded-xl p-6">
+                    <div id="tier-content-card" aria-live="polite" class="bg-slate-50 border border-slate-200 rounded-xl p-6">
                         <!-- Populated dynamically by JS -->
                     </div>
                 </div>
@@ -207,10 +192,20 @@
                 <div class="bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-between">
                     <div>
                         <h4 class="text-sm font-bold text-slate-900 mb-1">Academic & Time Requirements</h4>
-                        <p class="text-xs text-slate-500 mb-4">Comparison of academic weight and operational duration per tier.</p>
+                        <p class="text-xs text-slate-600 mb-4">Comparison of academic weight and operational duration per tier.</p>
                         <div class="chart-container">
-                            <canvas id="tierChart"></canvas>
+                            <canvas id="tierChart" role="img" aria-label="Bar chart comparing ECTS credits and weeks per programme stage: Tier 1, Tier 2 and Tier 3 are each 10 ECTS over 21 weeks; the MAS stage shows 30 ECTS and 30 weeks."></canvas>
                         </div>
+                        <table class="sr-only">
+                            <caption>Academic and time requirements per stage</caption>
+                            <thead><tr><th scope="col">Stage</th><th scope="col">ECTS credits</th><th scope="col">Weeks</th></tr></thead>
+                            <tbody>
+                                <tr><th scope="row">Tier 1</th><td>10</td><td>21</td></tr>
+                                <tr><th scope="row">Tier 2</th><td>10</td><td>21</td></tr>
+                                <tr><th scope="row">Tier 3</th><td>10</td><td>21</td></tr>
+                                <tr><th scope="row">MAS Thesis</th><td>30</td><td>30</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -218,7 +213,7 @@
 
         <div class="bg-amber-50 border border-amber-200 rounded-xl p-5">
             <div class="flex items-start space-x-3">
-                <span class="text-2xl">💡</span>
+                <span class="text-2xl" aria-hidden="true">💡</span>
                 <div>
                     <h4 class="text-sm font-bold text-amber-900">Double-Loop Learning Principle</h4>
                     <p class="text-xs text-amber-800 mt-1 leading-relaxed">
@@ -230,7 +225,7 @@
     </section>
 
     <!-- SECTION 3: CENTER OF EXCELLENCE (HLMS) -->
-    <section id="sec-hlms" class="space-y-8 hidden">
+    <section id="sec-hlms" role="tabpanel" aria-labelledby="tab-hlms" tabindex="0" class="space-y-8 hidden">
         <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
             <h2 class="text-xl font-bold text-slate-900 mb-2">Humanitarian Leadership & Management School (HLMS)</h2>
             <p class="text-slate-700 text-sm leading-relaxed mb-4">
@@ -240,23 +235,23 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
                     <div class="text-red-800 text-lg font-bold">Mandatory Gatekeeper</div>
-                    <p class="text-xs text-slate-600 mt-1">Completing HLMS modules is an institutional prerequisite for promotion into Head of Sub-delegation and Head of Delegation roles.</p>
+                    <p class="text-sm text-slate-600 mt-1">Completing HLMS modules is an institutional prerequisite for promotion into Head of Sub-delegation and Head of Delegation roles.</p>
                 </div>
                 <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
                     <div class="text-red-800 text-lg font-bold">Meritocratic Equalizer</div>
-                    <p class="text-xs text-slate-600 mt-1">Provides local resident staff with standardized pathways into executive management, dismantling historical Western delegate biases.</p>
+                    <p class="text-sm text-slate-600 mt-1">Provides local resident staff with standardized pathways into executive management, dismantling historical Western delegate biases.</p>
                 </div>
                 <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
                     <div class="text-red-800 text-lg font-bold">1,400+ Alumni</div>
-                    <p class="text-xs text-slate-600 mt-1">Graduates span 104 nationalities, establishing a unified global operational language across active conflict zones.</p>
+                    <p class="text-sm text-slate-600 mt-1">Graduates span 104 nationalities, establishing a unified global operational language across active conflict zones.</p>
                 </div>
             </div>
 
             <h3 class="text-base font-bold text-slate-900 mb-3">Red Cross & Red Crescent Movement Leadership Ecosystem</h3>
-            <p class="text-xs text-slate-600 mb-4">Distinguishing internal ICRC operational development from broader Movement governance initiatives.</p>
+            <p class="text-sm text-slate-600 mb-4">Distinguishing internal ICRC operational development from broader Movement governance initiatives.</p>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-xs">
+                <table class="w-full text-left border-collapse text-sm">
                     <thead>
                         <tr class="bg-slate-100 text-slate-800 font-semibold border-b border-slate-200">
                             <th class="p-3">Entity</th>
@@ -291,7 +286,7 @@
     </section>
 
     <!-- SECTION 4: PEDAGOGY & ACADEMIC PATHWAY -->
-    <section id="sec-pedagogy" class="space-y-8 hidden">
+    <section id="sec-pedagogy" role="tabpanel" aria-labelledby="tab-pedagogy" tabindex="0" class="space-y-8 hidden">
         <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
             <h2 class="text-xl font-bold text-slate-900 mb-2">Pedagogical Methodology & Academic Accreditation</h2>
             <p class="text-slate-700 text-sm leading-relaxed mb-6">
@@ -301,10 +296,10 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center mb-8">
                 <div>
                     <h3 class="text-base font-bold text-slate-900 mb-2">The 70:20:10 Operational Learning Model</h3>
-                    <p class="text-xs text-slate-600 mb-4 leading-relaxed">
+                    <p class="text-sm text-slate-600 mb-4 leading-relaxed">
                         Leadership capability is not acquired purely in class. The ICRC structures learning so that academic models are immediately applied within live combat deployments.
                     </p>
-                    <div class="space-y-3 text-xs">
+                    <div class="space-y-3 text-sm">
                         <div class="p-3 bg-slate-900 text-white rounded-lg flex items-start space-x-3">
                             <span class="font-bold text-amber-400 text-base">70%</span>
                             <div>
@@ -332,43 +327,52 @@
                 <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center">
                     <h4 class="text-xs font-bold text-slate-700 mb-2">Learning Effort Distribution</h4>
                     <div class="chart-container">
-                        <canvas id="pedagogyChart"></canvas>
+                        <canvas id="pedagogyChart" role="img" aria-label="Doughnut chart of learning effort: 70% applied field execution, 20% coaching and 360 feedback, 10% coursework and seminars."></canvas>
                     </div>
+                    <table class="sr-only">
+                        <caption>Learning effort distribution</caption>
+                        <thead><tr><th scope="col">Component</th><th scope="col">Share</th></tr></thead>
+                        <tbody>
+                            <tr><th scope="row">Applied field execution</th><td>70%</td></tr>
+                            <tr><th scope="row">Coaching and 360 feedback</th><td>20%</td></tr>
+                            <tr><th scope="row">Coursework and seminars</th><td>10%</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
             <h3 class="text-base font-bold text-slate-900 mb-4">University of Lucerne Academic Degree Pathway</h3>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
                 <div class="bg-white border-2 border-slate-200 p-4 rounded-lg relative">
-                    <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded font-bold text-[10px]">STEP 1</span>
+                    <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded font-bold text-xs">STEP 1</span>
                     <h4 class="font-bold text-slate-900 mt-2 text-sm">CAS 1: Leading by Example</h4>
                     <p class="text-slate-600 mt-1">10 ECTS | 21 Weeks</p>
-                    <p class="text-slate-500 mt-2 text-[11px]">Self-mastery, resilience, emotional intelligence & values.</p>
+                    <p class="text-slate-600 mt-2 text-sm">Self-mastery, resilience, emotional intelligence & values.</p>
                 </div>
                 <div class="bg-white border-2 border-slate-200 p-4 rounded-lg relative">
-                    <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded font-bold text-[10px]">STEP 2</span>
+                    <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded font-bold text-xs">STEP 2</span>
                     <h4 class="font-bold text-slate-900 mt-2 text-sm">CAS 2: High-Perf Teams</h4>
                     <p class="text-slate-600 mt-1">10 ECTS | 21 Weeks</p>
-                    <p class="text-slate-500 mt-2 text-[11px]">Multidisciplinary dynamics, psychological safety & D&I.</p>
+                    <p class="text-slate-600 mt-2 text-sm">Multidisciplinary dynamics, psychological safety & D&I.</p>
                 </div>
                 <div class="bg-white border-2 border-slate-200 p-4 rounded-lg relative">
-                    <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded font-bold text-[10px]">STEP 3</span>
+                    <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded font-bold text-xs">STEP 3</span>
                     <h4 class="font-bold text-slate-900 mt-2 text-sm">CAS 3: Complex Ops</h4>
                     <p class="text-slate-600 mt-1">10 ECTS | 21 Weeks</p>
-                    <p class="text-slate-500 mt-2 text-[11px]">Systems thinking, change management & diplomacy.</p>
+                    <p class="text-slate-600 mt-2 text-sm">Systems thinking, change management & diplomacy.</p>
                 </div>
                 <div class="bg-red-900 text-white p-4 rounded-lg relative border-2 border-red-900">
-                    <span class="bg-red-800 text-amber-300 px-2 py-0.5 rounded font-bold text-[10px]">FINAL DEGREE</span>
+                    <span class="bg-red-800 text-amber-300 px-2 py-0.5 rounded font-bold text-xs">FINAL DEGREE</span>
                     <h4 class="font-bold text-amber-400 mt-2 text-sm">MAS Degree</h4>
                     <p class="text-slate-300 mt-1">30 ECTS Total | ~1.5 Years</p>
-                    <p class="text-slate-200 mt-2 text-[11px]">Master's Thesis + Advanced modules in AI, neuroscience & future trends.</p>
+                    <p class="text-slate-200 mt-2 text-xs">Master's Thesis + Advanced modules in AI, neuroscience & future trends.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- SECTION 5: PIPELINES, IMPACT & DILEMMAS -->
-    <section id="sec-impact" class="space-y-8 hidden">
+    <section id="sec-impact" role="tabpanel" aria-labelledby="tab-impact" tabindex="0" class="space-y-8 hidden">
         <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
             <h2 class="text-xl font-bold text-slate-900 mb-2">Career Pipelines, Operational Impact & Strategic Dilemmas</h2>
             <p class="text-slate-700 text-sm leading-relaxed mb-6">
@@ -378,26 +382,26 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
                     <div class="flex items-center space-x-2 mb-3">
-                        <span class="text-xl">🧭</span>
+                        <span class="text-xl" aria-hidden="true">🧭</span>
                         <h3 class="font-bold text-slate-900 text-base">Generalist Operational Pipeline</h3>
                     </div>
-                    <p class="text-xs text-slate-600 mb-3">Focuses on political negotiation, security risk management, context analysis, and operational protection.</p>
-                    <div class="flex items-center space-x-2 text-xs font-semibold text-slate-700">
+                    <p class="text-sm text-slate-600 mb-3">Focuses on political negotiation, security risk management, context analysis, and operational protection.</p>
+                    <div class="flex flex-wrap items-center gap-2 text-sm font-semibold text-slate-700">
                         <span class="bg-white px-2.5 py-1 rounded border">Field Delegate</span>
-                        <span>➔</span>
+                        <span aria-hidden="true">➔</span>
                         <span class="bg-white px-2.5 py-1 rounded border">Head of Sub-delegation</span>
-                        <span>➔</span>
+                        <span aria-hidden="true">➔</span>
                         <span class="bg-white px-2.5 py-1 rounded border">Head of Delegation</span>
                     </div>
                 </div>
 
                 <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
                     <div class="flex items-center space-x-2 mb-3">
-                        <span class="text-xl">🛠️</span>
+                        <span class="text-xl" aria-hidden="true">🛠️</span>
                         <h3 class="font-bold text-slate-900 text-base">Specialist Technical Pipeline</h3>
                     </div>
-                    <p class="text-xs text-slate-600 mb-3">Develops technical experts to lead specialized field operations or transition into executive director roles.</p>
-                    <div class="flex flex-wrap gap-1 text-[11px] text-slate-700">
+                    <p class="text-sm text-slate-600 mb-3">Develops technical experts to lead specialized field operations or transition into executive director roles.</p>
+                    <div class="flex flex-wrap gap-1 text-sm text-slate-700">
                         <span class="bg-white px-2 py-0.5 rounded border">Health / Forensics</span>
                         <span class="bg-white px-2 py-0.5 rounded border">Water & Habitat</span>
                         <span class="bg-white px-2 py-0.5 rounded border">Weapon Contamination</span>
@@ -407,7 +411,7 @@
             </div>
 
             <h3 class="text-base font-bold text-slate-900 mb-3">Systemic Challenges & Emerging Conflicts</h3>
-            <div class="space-y-3 text-xs">
+            <div class="space-y-3 text-sm">
                 <div class="border border-slate-200 rounded-lg p-4 hover:bg-slate-50">
                     <h4 class="font-bold text-red-900 text-sm mb-1">1. Active Conflict Workload vs Academic Requirements</h4>
                     <p class="text-slate-600 leading-relaxed">
@@ -439,7 +443,7 @@
         <div>
             <span>ICRC Leadership Framework & HLMS Interactive Dashboard</span>
         </div>
-        <div class="text-slate-500">
+        <div class="text-slate-400">
             Based on documented institutional frameworks & Univ. of Lucerne CAS/MAS standards
         </div>
     </div>
@@ -494,47 +498,61 @@
     };
 
     // Tab Navigation Logic
-    function switchTab(tabId) {
-        const tabs = ['philosophy', 'tiers', 'hlms', 'pedagogy', 'impact'];
-        tabs.forEach(t => {
+    const TAB_IDS = ['philosophy', 'tiers', 'hlms', 'pedagogy', 'impact'];
+
+    function switchTab(tabId, opts = {}) {
+        if (!TAB_IDS.includes(tabId)) tabId = TAB_IDS[0];
+        TAB_IDS.forEach(t => {
             const btn = document.getElementById(`tab-${t}`);
             const sec = document.getElementById(`sec-${t}`);
-            if (t === tabId) {
-                btn.classList.add('active');
-                sec.classList.remove('hidden');
-            } else {
-                btn.classList.remove('active');
-                sec.classList.add('hidden');
-            }
+            const isActive = t === tabId;
+            btn.classList.toggle('active', isActive);
+            btn.setAttribute('aria-selected', String(isActive));
+            btn.tabIndex = isActive ? 0 : -1;
+            sec.classList.toggle('hidden', !isActive);
         });
+        ensureCharts(tabId);
+        if (opts.focus) document.getElementById(`tab-${tabId}`).focus();
+        if (opts.updateHash !== false && location.hash !== `#${tabId}`) {
+            history.replaceState(null, '', `#${tabId}`);
+        }
+    }
+
+    function onTabKeydown(e) {
+        const i = TAB_IDS.indexOf(e.currentTarget.dataset.tab);
+        let next = null;
+        if (e.key === 'ArrowRight') next = (i + 1) % TAB_IDS.length;
+        else if (e.key === 'ArrowLeft') next = (i - 1 + TAB_IDS.length) % TAB_IDS.length;
+        else if (e.key === 'Home') next = 0;
+        else if (e.key === 'End') next = TAB_IDS.length - 1;
+        if (next === null) return;
+        e.preventDefault();
+        switchTab(TAB_IDS[next], { focus: true });
     }
 
     // Value Selection Logic
     function selectValue(valKey) {
-        const keys = ['impact', 'collaboration', 'respect', 'compassion'];
-        keys.forEach(k => {
+        Object.keys(valuesData).forEach(k => {
             const card = document.getElementById(`val-card-${k}`);
-            if (k === valKey) {
-                card.classList.add('border-2', 'border-red-800');
-                card.classList.remove('border-slate-200');
-            } else {
-                card.classList.remove('border-2', 'border-red-800');
-                card.classList.add('border-slate-200');
-            }
+            const isActive = k === valKey;
+            card.classList.toggle('border-2', isActive);
+            card.classList.toggle('border-red-800', isActive);
+            card.classList.toggle('border-slate-200', !isActive);
+            card.setAttribute('aria-pressed', String(isActive));
         });
-        document.getElementById('val-detail-title').innerText = valuesData[valKey].title;
-        document.getElementById('val-detail-desc').innerText = valuesData[valKey].desc;
+        document.getElementById('val-detail-title').textContent = valuesData[valKey].title;
+        document.getElementById('val-detail-desc').textContent = valuesData[valKey].desc;
     }
 
     // Tier Selection Logic
+    const TIER_BTN_ACTIVE = "px-4 py-2 rounded-lg text-sm font-semibold bg-red-800 text-white shadow-sm";
+    const TIER_BTN_IDLE = "px-4 py-2 rounded-lg text-sm font-semibold bg-slate-100 text-slate-700 border hover:bg-slate-200";
+
     function selectTier(tierNum) {
         [1, 2, 3].forEach(n => {
             const btn = document.getElementById(`tier-btn-${n}`);
-            if (n === tierNum) {
-                btn.className = "px-4 py-2 rounded-lg text-sm font-semibold bg-red-800 text-white shadow-sm";
-            } else {
-                btn.className = "px-4 py-2 rounded-lg text-sm font-semibold bg-slate-100 text-slate-700 border hover:bg-slate-200";
-            }
+            btn.className = n === tierNum ? TIER_BTN_ACTIVE : TIER_BTN_IDLE;
+            btn.setAttribute('aria-pressed', String(n === tierNum));
         });
 
         const data = tiersData[tierNum];
@@ -544,7 +562,7 @@
                 <h3 class="text-lg font-bold text-slate-900">${data.title}</h3>
                 <span class="bg-red-100 text-red-900 font-semibold px-2.5 py-0.5 rounded text-xs">${data.credential}</span>
             </div>
-            <div class="space-y-3 text-xs">
+            <div class="space-y-3 text-sm">
                 <div>
                     <strong class="text-slate-900 block font-semibold mb-0.5">Focal Domain:</strong>
                     <p class="text-slate-700">${data.domain}</p>
@@ -567,76 +585,98 @@
         `;
     }
 
-    // Chart.js Implementations
-    let tierChartInstance = null;
-    let pedagogyChartInstance = null;
+    // Chart.js Implementations (created lazily, the first time their tab is shown,
+    // so they are never measured while hidden)
+    const chartInstances = {};
 
-    function initCharts() {
-        // Chart 1: Tier Comparison (Bar)
-        const ctxTier = document.getElementById('tierChart').getContext('2d');
-        tierChartInstance = new Chart(ctxTier, {
-            type: 'bar',
-            data: {
-                labels: ['Tier 1', 'Tier 2', 'Tier 3', 'MAS Thesis'],
-                datasets: [
-                    {
-                        label: 'ECTS Credits',
-                        data: [10, 10, 10, 30],
-                        backgroundColor: '#991b1b'
-                    },
-                    {
-                        label: 'Field Implementation (Weeks)',
-                        data: [21, 21, 21, 30],
-                        backgroundColor: '#0f172a'
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: { beginAtZero: true }
+    const chartBuilders = {
+        tiers() {
+            return new Chart(document.getElementById('tierChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Tier 1', 'Tier 2', 'Tier 3', 'MAS Thesis'],
+                    datasets: [
+                        {
+                            label: 'ECTS Credits',
+                            data: [10, 10, 10, 30],
+                            backgroundColor: '#991b1b'
+                        },
+                        {
+                            label: 'Field Implementation (Weeks)',
+                            data: [21, 21, 21, 30],
+                            backgroundColor: '#0f172a'
+                        }
+                    ]
                 },
-                plugins: {
-                    legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 12 } } }
+                    }
                 }
-            }
-        });
-
-        // Chart 2: 70:20:10 Model (Doughnut)
-        const ctxPedagogy = document.getElementById('pedagogyChart').getContext('2d');
-        pedagogyChartInstance = new Chart(ctxPedagogy, {
-            type: 'doughnut',
-            data: {
-                labels: ['70% Applied Field Execution', '20% Coaching & 360 Feedback', '10% Coursework & Seminars'],
-                datasets: [{
-                    data: [70, 20, 10],
-                    backgroundColor: ['#0f172a', '#d97706', '#991b1b']
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return context.label;
+            });
+        },
+        pedagogy() {
+            return new Chart(document.getElementById('pedagogyChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['70% Applied Field Execution', '20% Coaching & 360 Feedback', '10% Coursework & Seminars'],
+                    datasets: [{
+                        data: [70, 20, 10],
+                        backgroundColor: ['#0f172a', '#d97706', '#991b1b']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 12 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label;
+                                }
                             }
                         }
                     }
                 }
-            }
-        });
+            });
+        }
+    };
+
+    function ensureCharts(tabId) {
+        if (!chartBuilders[tabId]) return;
+        if (!chartInstances[tabId]) {
+            chartInstances[tabId] = chartBuilders[tabId]();
+        } else {
+            chartInstances[tabId].resize();
+        }
     }
 
-    // Initialize application state on window load
-    window.onload = function() {
+    // Initialize application state once the DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('[data-tab]').forEach(btn => {
+            btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+            btn.addEventListener('keydown', onTabKeydown);
+        });
+        document.querySelectorAll('[data-value]').forEach(btn => {
+            btn.addEventListener('click', () => selectValue(btn.dataset.value));
+        });
+        document.querySelectorAll('[data-tier]').forEach(btn => {
+            btn.addEventListener('click', () => selectTier(Number(btn.dataset.tier)));
+        });
+        window.addEventListener('hashchange', () => {
+            switchTab(location.hash.slice(1), { updateHash: false });
+        });
+
         selectValue('impact');
         selectTier(1);
-        initCharts();
-    };
+        switchTab(location.hash.slice(1), { updateHash: false });
+    });
 </script>
 </body>
 </html>
